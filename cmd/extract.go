@@ -23,13 +23,17 @@ package cmd
 
 import (
 	"fmt"
-
+	"github.com/hbish/smex/pkg/xml"
 	"github.com/spf13/cobra"
+	"io/ioutil"
+	"net/http"
 )
+
+var isRemote bool
 
 // extractCmd represents the extract command
 var extractCmd = &cobra.Command{
-	Use:   "extract",
+	Use:   "extract [URI]",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -37,12 +41,49 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("extract called")
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) != 1 {
+			return fmt.Errorf("extract expects the location of the sitemap\n")
+		}
+		isRemote, _ = cmd.Flags().GetBool("remote")
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if isRemote {
+			res, err := http.Get(args[0])
+			if err != nil {
+				return fmt.Errorf("unable to retrieve sitemap")
+			}
+			defer res.Body.Close()
+			b, err := ioutil.ReadAll(res.Body)
+			if err != nil {
+				return fmt.Errorf("unable to read http content")
+			}
+			urlSet, err := xml.FromXML(b)
+			if err != nil {
+				return fmt.Errorf("unable to parse the xml content")
+			}
+			for _, url := range urlSet.URL {
+				fmt.Println(url.Loc)
+			}
+		} else {
+			file, err := ioutil.ReadFile(args[0])
+			if err != nil || file == nil {
+				return fmt.Errorf("unable to read file")
+			}
+			urlSet, err := xml.FromXML(file)
+			if err != nil {
+				return fmt.Errorf("unable to parse the xml content")
+			}
+			for _, url := range urlSet.URL {
+				fmt.Println(url.Loc)
+			}
+		}
+		return nil
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(extractCmd)
-	extractCmd.Flags().BoolP("location", "l", false, "extract loc urls only")
+	//extractCmd.Flags().BoolP("location", "l", false, "extract loc urls only")
 }

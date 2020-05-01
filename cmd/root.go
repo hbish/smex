@@ -28,8 +28,7 @@ import (
 )
 
 var Verbose bool
-var Url string
-var File string
+var Remote bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -39,6 +38,8 @@ var rootCmd = &cobra.Command{
 
 Smex is short for Sitemap Extractor and it support extracting and converting sitemaps 
 to various formats`,
+	SilenceUsage:  true,
+	SilenceErrors: true,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -50,7 +51,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&File, "file", "f", "", "local sitemap to process")
-	rootCmd.PersistentFlags().StringVarP(&Url, "url", "u", "", "remote sitemap to process")
+	rootCmd.PersistentFlags().BoolVarP(&Remote, "remote", "r", false, "indicate the sitemap is remote")
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 }
