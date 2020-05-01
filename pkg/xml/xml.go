@@ -20,7 +20,7 @@ type URL struct {
 	Priority   float32 `xml:"priority,omitempty"`
 }
 
-func FromXML(rawXml []byte) (*URLSet, error) {
+func UnmarshalXML(rawXml []byte) (*URLSet, error) {
 	urlSet := URLSet{}
 
 	err := xml.Unmarshal(rawXml, &urlSet)

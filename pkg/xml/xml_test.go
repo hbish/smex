@@ -19,7 +19,7 @@ func TestFromXMLWithExampleXML(t *testing.T) {
 </urlset>
 `
 
-	actual, err := FromXML([]byte(input))
+	actual, err := UnmarshalXML([]byte(input))
 
 	var expected = URLSet{
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -63,7 +63,7 @@ func TestFromXMLWithExampleXMLMultipleURLs(t *testing.T) {
 </urlset>
 `
 
-	actual, err := FromXML([]byte(input))
+	actual, err := UnmarshalXML([]byte(input))
 
 	var expected = URLSet{
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -89,7 +89,7 @@ func TestFromXMLWithReal(t *testing.T) {
 </urlset>
 `
 
-	actual, err := FromXML([]byte(input))
+	actual, err := UnmarshalXML([]byte(input))
 
 	var expected = URLSet{
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -108,7 +108,7 @@ func TestFromXMLWithInvalidHTML(t *testing.T) {
 	input := `<html></html>
 `
 
-	actual, err := FromXML([]byte(input))
+	actual, err := UnmarshalXML([]byte(input))
 	assert.Nil(t, actual)
 	assert.EqualError(t, err, "expected element type <urlset> but have <html>")
 }
@@ -116,7 +116,7 @@ func TestFromXMLWithInvalidHTML(t *testing.T) {
 func TestFromXMLWithInvalidRandomString(t *testing.T) {
 	input := `easy as 123`
 
-	actual, err := FromXML([]byte(input))
+	actual, err := UnmarshalXML([]byte(input))
 	assert.Nil(t, actual)
 	assert.EqualError(t, err, "EOF")
 }
