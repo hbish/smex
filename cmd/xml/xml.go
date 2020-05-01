@@ -19,3 +19,15 @@ type URL struct {
 	ChangeFreq string  `xml:"changefreq,omitempty"`
 	Priority   float32 `xml:"priority,omitempty"`
 }
+
+func fromXML(rawXml []byte) (*URLSet, error) {
+	urlSet := URLSet{}
+
+	err := xml.Unmarshal(rawXml, &urlSet)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &urlSet, nil
+}
