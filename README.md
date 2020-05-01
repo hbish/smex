@@ -1,9 +1,21 @@
 # smex
 
-A Go CLI application that processes sitemaps
+A Go CLI application that processes sitemaps. The name smex is short for sitemap-extrator and it can handle various operations related to sitemaps.
 
-## Commands
+Currently smex supports: 
+- extraction of urls
+- conversion of sitemap into other formats such as json and csv
+- url status checking
 
+## Usage
+
+### Extract
+
+### Convert
+
+### Check
+
+To get help simply run `smex` without any commands and flags.
 
 ## Installation
 
