@@ -19,3 +19,8 @@ To get help simply run `smex` without any commands and flags.
 
 ## Installation
 
+
+
+## Documentation
+
+For package documentation please check on [pkg.go.dev](https://pkg.go.dev/github.com/hbish/smex).
