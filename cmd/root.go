@@ -29,12 +29,14 @@ import (
 
 var Verbose bool
 var Remote bool
+var Index bool
+var Pattern string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "smex",
 	Short: "A utility to process sitemaps",
-	Long: `Smex is a CLI library for Go that processes sitemaps.
+	Long: `Smex - a CLI library processes sitemaps in GO.
 
 Smex is short for Sitemap Extractor and it support extracting and converting sitemaps 
 to various formats`,
@@ -52,5 +54,8 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Remote, "remote", "r", false, "indicate the sitemap is remote")
+	rootCmd.PersistentFlags().BoolVarP(&Index, "index", "i", false, "parse sitemap index - TODO")
+	rootCmd.PersistentFlags().StringVarP(&Pattern, "pattern", "p", "", "parse loc based on regex pattern - TODO")
+
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 }
