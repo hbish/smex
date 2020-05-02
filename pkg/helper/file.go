@@ -6,14 +6,17 @@ import (
 	"net/http"
 )
 
-func LoadSitemap(path string, isRemote bool) ([]byte, error) {
-	if isRemote {
+// load sitemap currently using Remote to distinguish type
+// TODO: enhance parsing logic to determine urls
+func LoadSitemap(path string, Remote bool) ([]byte, error) {
+	if Remote {
 		return loadSitemapFromHTTP(path)
 	} else {
 		return loadSitemapFromFile(path)
 	}
 }
 
+// load sitemap given path
 func loadSitemapFromFile(path string) ([]byte, error) {
 	content, err := ioutil.ReadFile(path)
 	if err != nil || content == nil {
@@ -22,6 +25,7 @@ func loadSitemapFromFile(path string) ([]byte, error) {
 	return content, nil
 }
 
+// load sitemap given url
 func loadSitemapFromHTTP(url string) ([]byte, error) {
 	res, err := http.Get(url)
 	if err != nil {

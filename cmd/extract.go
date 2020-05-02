@@ -29,8 +29,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var isRemote bool
-
 // extractCmd represents the extract command
 var extractCmd = &cobra.Command{
 	Use:   "extract [URI]",
@@ -45,11 +43,11 @@ to quickly create a Cobra application.`,
 		if len(args) != 1 {
 			return errors.New("extract expects the location of the sitemap\n")
 		}
-		isRemote, _ = cmd.Flags().GetBool("remote")
+		Remote, _ = cmd.Flags().GetBool("remote")
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		sitemap, err := helper.LoadSitemap(args[0], isRemote)
+		sitemap, err := helper.LoadSitemap(args[0], Remote)
 		if err != nil {
 			return err
 		}
