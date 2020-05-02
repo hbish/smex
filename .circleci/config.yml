@@ -1,16 +1,51 @@
-# Golang CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
-jobs:
-  build:
-    docker:
-      - image: circleci/golang:1.14
+version: 2.1
 
+executors:
+  go-exec:
+    parameters:
+      go-version:
+        type: string
+    docker:
+      - image: circleci/golang:<< parameters.go-version >>
     working_directory: /go/src/github.com/hbish/smex
+
+commands:
+  go_mod_download:
+    steps:
+      - restore_cache:
+          name: Restore go modules cache
+          keys:
+            - go-modules-{{ checksum "go.sum" }}
+
+      - run: go mod download
+
+      - save_cache:
+          name: Save go modules cache
+          key: go-modules-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+
+jobs:
+  go-build:
+    parameters:
+      go-version:
+        type: string
+    executor:
+      name: go-exec
+      go-version: << parameters.go-version >>
     steps:
       - checkout
+      - go_mod_download
+      - run:
+          name: Run Linting
+          command: make lint
+      - run:
+          name: Run Tests
+          command: make test
 
-      # specify any bash command here prefixed with `run: `
-      - run: go get -v -t -d ./...
-      - run: go test -v ./...
+workflows:
+  version: 2
+  main:
+    jobs:
+      - go-build:
+          go-version: "1.14"

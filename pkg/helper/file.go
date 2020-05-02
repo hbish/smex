@@ -1,9 +1,11 @@
 package helper
 
 import (
-	"github.com/pkg/errors"
 	"io/ioutil"
+
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 // load sitemap currently using Remote to distinguish type
@@ -27,7 +29,8 @@ func loadSitemapFromFile(path string) ([]byte, error) {
 
 // load sitemap given url
 func loadSitemapFromHTTP(url string) ([]byte, error) {
-	res, err := http.Get(url)
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to retrieve sitemap")
 	}

@@ -7,10 +7,10 @@ import (
 
 type outType string
 
-const(
+const (
 	Stdout outType = "stdout"
-	Csv outType = "csv"
-	Json outType = "json"
+	Csv    outType = "csv"
+	Json   outType = "json"
 )
 
 // A SmexWriter writes records to different formats.

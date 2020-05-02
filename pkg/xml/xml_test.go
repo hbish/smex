@@ -2,8 +2,9 @@ package xml
 
 import (
 	"encoding/xml"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFromXMLWithExampleXML(t *testing.T) {

@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+gofiles=$(git diff --cached --name-only --diff-filter=ACM | grep -v 'vendor/' | grep '\.go$')
+[ -z "$gofiles" ] && exit 0
+
+unformatted=$(gofmt -l $gofiles)
+badimports=$(goimports -l $gofiles)
+[ -z "$unformatted" ] && [ -z "$badimports" ] && exit 0
+
+echo >&2 "Go files must be formatted with gofmt and goimport. Please run:"
+for fn in $unformatted; do
+echo >&2 "  gofmt -w $PWD/$fn"
+done
+for fn in $badimports; do
+echo >&2 "  goimports -w $PWD/$fn"
+done
+
+exit 1

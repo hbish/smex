@@ -10,11 +10,13 @@ $(LINT_BIN):
 	go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 
 
+init:
+	git config core.hooksPath .githooks
+.PHONY: init
+
 ## build: compile and builds smex excutables
 build:
-	# MacOS
 	GOOS=darwin GOARCH=amd64 go build -o $(BIN_DIR)/$(NAME)-darwin-amd64 main.go
-	# Linux
 	GOOS=linux GOARCH=amd64 go build -o $(BIN_DIR)/$(NAME)-linux-amd64 main.go
 .PHONY: build
 

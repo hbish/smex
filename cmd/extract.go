@@ -23,6 +23,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/hbish/smex/pkg/helper"
 	"github.com/hbish/smex/pkg/xml"
 	"github.com/pkg/errors"
