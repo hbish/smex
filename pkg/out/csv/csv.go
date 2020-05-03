@@ -30,8 +30,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-//import "encoding/csv"
-
 type Writer struct {
 	*csv.Writer
 }

@@ -21,4 +21,32 @@ THE SOFTWARE.
 */
 package json
 
-//import "encoding/json"
+import (
+	"encoding/json"
+	"io"
+
+	"github.com/hbish/smex/pkg/xml"
+)
+
+type Writer struct {
+	w      io.Writer
+	pretty bool
+}
+
+func NewWriter(w io.Writer, pretty bool) *Writer {
+	enc := &Writer{
+		w:      w,
+		pretty: pretty,
+	}
+
+	return enc
+}
+
+func (w Writer) WriteToFile(urls []xml.URL, loc bool) error {
+	marshal, err := json.MarshalIndent(urls, "", "  ")
+	if err != nil {
+		return err
+	}
+	w.w.Write(marshal)
+	return nil
+}

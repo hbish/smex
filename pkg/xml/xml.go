@@ -35,10 +35,10 @@ type URLSet struct {
 
 // URL is for every single location url
 type URL struct {
-	Loc        string  `xml:"loc"`
-	LastMod    string  `xml:"lastmod,omitempty"`
-	ChangeFreq string  `xml:"changefreq,omitempty"`
-	Priority   float32 `xml:"priority,omitempty"`
+	Loc        string  `xml:"loc" json:"loc"`
+	LastMod    string  `xml:"lastmod,omitempty" json:"lastmod"`
+	ChangeFreq string  `xml:"changefreq,omitempty" json:"changefreq"`
+	Priority   float32 `xml:"priority,omitempty" json:"priority"`
 }
 
 func UnmarshalXML(rawXml []byte) (*URLSet, error) {

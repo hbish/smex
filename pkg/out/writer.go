@@ -22,8 +22,9 @@ THE SOFTWARE.
 package out
 
 import (
-	"fmt"
 	"os"
+
+	"github.com/hbish/smex/pkg/out/json"
 
 	"github.com/hbish/smex/pkg/out/csv"
 
@@ -87,7 +88,13 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 	}
 
 	if isFormatRequested(w.Formats, Json) {
-		fmt.Println(urls)
+		jsonFile, err := os.Create("output.json")
+		if err != nil {
+			return err
+		}
+		defer jsonFile.Close()
+		writer := json.NewWriter(jsonFile, true)
+		writer.WriteToFile(urls, loc)
 	}
 
 	return nil
