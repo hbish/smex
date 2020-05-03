@@ -37,11 +37,11 @@ jobs:
       - checkout
       - go_mod_download
       - run:
-          name: Run Linting
-          command: make lint
+          name: Run Test & Lint
+          command: make test-ci
       - run:
-          name: Run Tests
-          command: make test
+          name: Build Artifacts
+          command: make build-ci
 
 workflows:
   version: 2
