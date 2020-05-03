@@ -53,7 +53,7 @@ func loadSitemapFromHTTP(url string) ([]byte, error) {
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to retrieve sitemap")
+		return nil, err
 	}
 	defer res.Body.Close()
 	content, err := ioutil.ReadAll(res.Body)
