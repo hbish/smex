@@ -22,9 +22,8 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/hbish/smex/pkg/helper"
+	"github.com/hbish/smex/pkg/out"
 	"github.com/hbish/smex/pkg/xml"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -57,15 +56,15 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			return errors.Wrap(err, "unable to parse the xml content")
 		}
-		for _, url := range urlSet.URL {
-			fmt.Println(url.Loc)
-		}
 
+		writer := out.NewMultiWriter(nil)
+		loc, _ := cmd.Flags().GetBool("loc")
+		writer.Write(urlSet.URL, loc)
 		return nil
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(extractCmd)
-	extractCmd.Flags().BoolP("location", "l", false, "output loc urls only - TODO")
+	extractCmd.Flags().BoolP("loc", "l", false, "output location urls only")
 }
