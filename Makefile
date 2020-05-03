@@ -8,7 +8,7 @@ BUILD_DIR := $(CURDIR)/build
 LINT_BIN := $(GOPATH)/bin/golangci-lint
 
 prepare-lint: # prepare lint dependency
-	@if [ -z `which golangci-lint` ]; then \
+	@if [ -z `which $(BIN_DIR)/golangci-lint` ]; then \
 		echo "[go get] installing golangci-lint";\
 		GOBIN=$(BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint;\
 	fi
@@ -54,8 +54,8 @@ mod: clean # download go modules
 	@go mod download
 	@go mod tidy
 
-lint: $(LINT_BIN) # check for errors in code
-	@golangci-lint run -p format -p unused -p bugs
+lint: prepare-lint # check for errors in code
+	@$(BIN_DIR)/golangci-lint run -p format -p unused -p bugs
 .PHONY: lint
 
 test: prepare-cov # run unit tests
