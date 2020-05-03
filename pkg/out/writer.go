@@ -23,6 +23,9 @@ package out
 
 import (
 	"fmt"
+	"os"
+
+	"github.com/hbish/smex/pkg/out/csv"
 
 	"github.com/hbish/smex/pkg/out/stdout"
 	"github.com/hbish/smex/pkg/xml"
@@ -43,22 +46,7 @@ type SmexWriter struct {
 	Formats []Format
 }
 
-func (w SmexWriter) Write(urls []xml.URL, loc bool) {
-	for _, f := range w.Formats {
-		switch f {
-		case Stdout:
-			writer := stdout.NewWriter()
-			writer.Write(urls, loc)
-		case Csv:
-			fmt.Println(urls)
-		case Json:
-			fmt.Println(urls)
-		default:
-		}
-	}
-}
-
-// NewWriter returns a new SmexWriter that writes to w.
+// NewWriter returns a new SmexWriter that writes to stdout
 func NewWriter() *SmexWriter {
 	return &SmexWriter{
 		Formats: []Format{Stdout},
@@ -71,7 +59,6 @@ func NewMultiWriter(outFormats []string) *SmexWriter {
 	if len(outFormats) == 0 {
 		return NewWriter()
 	}
-
 	var formats []Format
 	for _, t := range outFormats {
 		formats = append(formats, Format(t))
@@ -80,4 +67,37 @@ func NewMultiWriter(outFormats []string) *SmexWriter {
 	return &SmexWriter{
 		Formats: formats,
 	}
+}
+
+func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
+	if isFormatRequested(w.Formats, Stdout) {
+		writer := stdout.NewWriter()
+		writer.Write(urls, loc)
+	}
+
+	if isFormatRequested(w.Formats, Csv) {
+		csvFile, err := os.Create("output.csv")
+		if err != nil {
+			return err
+		}
+		defer csvFile.Close()
+		writer := csv.NewWriter(csvFile, ',')
+		defer writer.Flush()
+		writer.WriteToFile(urls, loc)
+	}
+
+	if isFormatRequested(w.Formats, Json) {
+		fmt.Println(urls)
+	}
+
+	return nil
+}
+
+func isFormatRequested(fs []Format, format Format) bool {
+	for _, f := range fs {
+		if format == f {
+			return true
+		}
+	}
+	return false
 }

@@ -2,14 +2,20 @@
 
 A blazing fast CLI application that processes sitemaps in Go Lang. 
 
-smex is short for **S**ite**M**ap **EX**trator. It can handle various operations related to sitemaps with more being build over time.
+Smex is short for **S**ite**M**ap **EX**trator. It can handle various operations related to sitemaps with more being 
+build over time. Smex has grown from the frustration of migrating multiple websites in the past and handling changes in 
+URL semantics and massive amount of assets like images.  
 
-smex supports: 
-- extraction of urls
-- conversion of sitemap into other formats such as json and csv
-- url status checking
+Smex supports: 
+- [x] extraction of urls
+- [x] process local/remote sitemaps
+- [x] output to csv/json
+- [ ] pattern matching on urls
+- [ ] url status checking
+- [ ] extraction of images
+- [ ] support for sitemaps with multiple languages
 
-## Usage
+## Usages
 
 ### Extract
 
@@ -23,9 +29,19 @@ You can also point the extract at a sitemap locally
 
 ### Convert
 
+To covert sitemap into another format
+
+TODO
+
 ### Check
 
+To check the status of the pages
+
+TODO
+
 ### Validate 
+
+To validate if the sitemap is valid
 
 TODO
 
@@ -45,6 +61,7 @@ TODO
 
 ## Documentation
 
+TODO - once published
 For package documentation please check on [pkg.go.dev](https://pkg.go.dev/github.com/hbish/smex).
 
 ## Contribute
@@ -59,11 +76,18 @@ Initialise local environment
 
 `make init`
 
+Running the source
+
+`go run github.com/hbish/smex [command] [flags...]`
+
 Running tests
 
 `make test`
 
-Running the source
+Make the changes, the linter is set up to run when you commit your code, if it passes feel free to submit a PR!
 
-`go run github.com/hbish/smex [command] [flags...]`
+## Last Thing
+
+Smex is my first stab at building with Go. If you have any feedback, comments or notice any bugs, I'd be more than happy 
+to consider them through the github issue tracker or better yet send me patches! 
 

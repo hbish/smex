@@ -57,9 +57,13 @@ to quickly create a Cobra application.`,
 			return errors.Wrap(err, "unable to parse the xml content")
 		}
 
-		writer := out.NewMultiWriter(nil)
+		formats, _ := cmd.Flags().GetStringSlice("formats")
+		writer := out.NewMultiWriter(formats)
 		loc, _ := cmd.Flags().GetBool("loc")
-		writer.Write(urlSet.URL, loc)
+		err = writer.Write(urlSet.URL, loc)
+		if err != nil {
+			return errors.Wrap(err, "unable to write output")
+		}
 		return nil
 	},
 }

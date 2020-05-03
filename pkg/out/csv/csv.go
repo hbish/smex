@@ -21,4 +21,54 @@ THE SOFTWARE.
 */
 package csv
 
+import (
+	"encoding/csv"
+	"fmt"
+	"io"
+
+	"github.com/hbish/smex/pkg/xml"
+	"github.com/pkg/errors"
+)
+
 //import "encoding/csv"
+
+type Writer struct {
+	*csv.Writer
+}
+
+func NewWriter(w io.Writer, delim rune) *Writer {
+	writer := csv.NewWriter(w)
+	if delim != 0 {
+		writer.Comma = delim
+	}
+
+	return &Writer{Writer: writer}
+}
+
+func (w Writer) WriteToFile(urls []xml.URL, loc bool) ([][]string, error) {
+	var content [][]string
+	header := w.writeHeader(loc)
+	content = append(content, header)
+
+	for _, url := range urls {
+		line := []string{url.Loc}
+		if !loc {
+			line = append(line, url.LastMod, url.ChangeFreq, fmt.Sprintf("%.2f", url.Priority))
+		}
+		content = append(content, line)
+	}
+	err := w.WriteAll(content)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to write csv content")
+	}
+	return content, nil
+}
+
+// TODO rather than hard code fields, can use reflection or read in user input
+func (w Writer) writeHeader(loc bool) []string {
+	header := []string{"loc"}
+	if !loc {
+		header = append(header, "lastmod", "changefreq", "priority")
+	}
+	return header
+}

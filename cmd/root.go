@@ -31,6 +31,7 @@ import (
 var Verbose bool
 var Remote bool
 var Index bool
+var Formats []string
 var Pattern string
 
 // rootCmd represents the base command when called without any subcommands
@@ -57,6 +58,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Remote, "remote", "r", false, "indicate the sitemap is remote")
 	rootCmd.PersistentFlags().BoolVarP(&Index, "index", "i", false, "parse sitemap index - TODO")
 	rootCmd.PersistentFlags().StringVarP(&Pattern, "pattern", "p", "", "parse loc based on regex pattern - TODO")
+	rootCmd.PersistentFlags().StringSliceVarP(&Formats, "formats", "f", []string{}, "output formats (stdout, csv, json), defaults to stdout")
 
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 }
