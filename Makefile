@@ -10,23 +10,23 @@ LINT_BIN := $(GOPATH)/bin/golangci-lint
 prepare-lint: # prepare lint dependency
 	@if [ -z `which $(BIN_DIR)/golangci-lint` ]; then \
 		echo "[go get] installing golangci-lint";\
-		GOBIN=$(BIN_DIR) go install github.com/golangci/golangci-lint/cmd/golangci-lint;\
+		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/golangci/golangci-lint/cmd/golangci-lint;\
 	fi
 
 prepare-cov:
 	@if [ -z `which $(BIN_DIR)/gocov` ]; then \
 		echo "[go get] installing gocov";\
-		GOBIN=$(BIN_DIR) go install github.com/axw/gocov/gocov;\
+		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/axw/gocov/gocov;\
 	fi
 
 prepare: prepare-lint prepare-cov # prepare ci dependency
 	@if [ -z `which $(BIN_DIR)/gox` ]; then \
 		echo "[go get] installing gox";\
-		GOBIN=$(BIN_DIR) go install github.com/mitchellh/gox;\
+		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/mitchellh/gox;\
 	fi
 	@if [ -z `which $(BIN_DIR)/github-release` ]; then \
 		echo "[go get] installing github-release";\
-		GOBIN=$(BIN_DIR) go install github.com/buildkite/github-release;\
+		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/buildkite/github-release;\
 	fi
 
 init: mod # init repo for local development
