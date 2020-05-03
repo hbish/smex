@@ -9,8 +9,8 @@ LINT_BIN := $(GOPATH)/bin/golangci-lint
 
 prepare-lint: # prepare lint dependency
 	@if [ -z `which $(BIN_DIR)/golangci-lint` ]; then \
-		echo "[go get] installing golangci-lint";\
-		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/golangci/golangci-lint/cmd/golangci-lint;\
+		echo "[downloading] installing golangci-lint";\
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(BIN_DIR) v1.26.0;\
 	fi
 
 prepare-cov:
