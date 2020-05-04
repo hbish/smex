@@ -84,13 +84,12 @@ func TestNewWriter_WriteToFile_OnlyLoc(t *testing.T) {
 
 func TestNewWriter_WriteToFile_Error(t *testing.T) {
 	// given
-	afero.WriteFile(fs, t.Name(), []byte("test"), os.FileMode(0400))
+	_ = afero.WriteFile(fs, t.Name(), []byte("test"), os.FileMode(0400))
 	file, _ := fs.OpenFile(t.Name(), 0, os.FileMode(0400))
 	writer := NewWriter(file, ',')
 
 	// when
 	_, err := writer.WriteToFile(urls, true)
-	writer.Error()
 
 	// then
 	assert.EqualError(t, err, "unable to write csv content: write TestNewWriter_WriteToFile_Error: file handle is read only")

@@ -77,24 +77,24 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 	}
 
 	if isFormatRequested(w.Formats, Csv) {
-		csvFile, err := os.Create("output.csv")
+		csvFile, err := os.Create("smex-output.csv")
 		if err != nil {
 			return err
 		}
 		defer csvFile.Close()
 		writer := csv.NewWriter(csvFile, ',')
 		defer writer.Flush()
-		writer.WriteToFile(urls, loc)
+		_, _ = writer.WriteToFile(urls, loc)
 	}
 
 	if isFormatRequested(w.Formats, Json) {
-		jsonFile, err := os.Create("output.json")
+		jsonFile, err := os.Create("smex-output.json")
 		if err != nil {
 			return err
 		}
 		defer jsonFile.Close()
 		writer := json.NewWriter(jsonFile, true)
-		writer.WriteToFile(urls, loc)
+		_ = writer.WriteToFile(urls, loc)
 	}
 
 	return nil

@@ -15,4 +15,4 @@
 vendor/
 build/
 bin/
-output.csv
+smex-output*

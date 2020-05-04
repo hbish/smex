@@ -47,6 +47,9 @@ func (w Writer) WriteToFile(urls []xml.URL, loc bool) error {
 	if err != nil {
 		return err
 	}
-	w.w.Write(marshal)
+	_, err = w.w.Write(marshal)
+	if err != nil {
+		return err
+	}
 	return nil
 }

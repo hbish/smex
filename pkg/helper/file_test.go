@@ -40,7 +40,7 @@ var (
 func TestLoadSitemap_Local(t *testing.T) {
 	// given
 	_, _ = fs.Create(t.Name())
-	afero.WriteFile(fs, t.Name(), []byte("testing"), 0644)
+	_ = afero.WriteFile(fs, t.Name(), []byte("testing"), 0644)
 
 	// when
 	actual, _ := LoadSitemap(t.Name(), false)
@@ -67,7 +67,7 @@ func TestLoadSitemap_Remote(t *testing.T) {
 		"</urlset>"
 	mux = http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(xml))
+		_, _ = w.Write([]byte(xml))
 	})
 	server = httptest.NewServer(mux)
 

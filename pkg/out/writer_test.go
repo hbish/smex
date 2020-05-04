@@ -34,5 +34,5 @@ func TestSmexWriter(t *testing.T) {
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
 	}
 
-	w.Write(urls, false)
+	_ = w.Write(urls, false)
 }
