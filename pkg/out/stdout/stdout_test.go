@@ -22,6 +22,7 @@ THE SOFTWARE.
 package stdout
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/hbish/smex/pkg/xml"
@@ -38,7 +39,8 @@ var urls = []xml.URL{
 
 func TestNewWriter(t *testing.T) {
 	//given
-	writer := NewWriter()
+	buf := new(bytes.Buffer)
+	writer := NewWriter(buf)
 	//when
 	//then
 	assert.NotNil(t, writer)
@@ -46,10 +48,11 @@ func TestNewWriter(t *testing.T) {
 
 func TestWriter_Write_All(t *testing.T) {
 	// given
-	writer := NewWriter()
+	buf := new(bytes.Buffer)
+	writer := NewWriter(buf)
 
 	// when
-	actual := writer.Write(urls, false)
+	_ = writer.Write(urls, false)
 
 	// then
 	expected := "http://www.example.com/                                          \t2005-01-01          monthly\t0.80\n" +
@@ -57,15 +60,16 @@ func TestWriter_Write_All(t *testing.T) {
 		"http://www.example.com/catalog?item=73&desc=vacation_new_zealand \t2004-12-23          weekly \t\n" +
 		"http://www.example.com/catalog?item=74&desc=vacation_newfoundland\t2004-12-23T18:00:15+00:000.30\n" +
 		"http://www.example.com/catalog?item=83&desc=vacation_usa         \t2004-11-23          \n"
-	assert.Equal(t, expected, actual)
+	assert.Equal(t, expected, buf.String())
 }
 
 func TestWriter_Write_OnlyLoc(t *testing.T) {
 	// given
-	writer := NewWriter()
+	buf := new(bytes.Buffer)
+	writer := NewWriter(buf)
 
 	// when
-	actual := writer.Write(urls, true)
+	_ = writer.Write(urls, true)
 
 	// then
 	expected := "http://www.example.com/\t\n" +
@@ -73,5 +77,5 @@ func TestWriter_Write_OnlyLoc(t *testing.T) {
 		"http://www.example.com/catalog?item=73&desc=vacation_new_zealand\t\n" +
 		"http://www.example.com/catalog?item=74&desc=vacation_newfoundland\t\n" +
 		"http://www.example.com/catalog?item=83&desc=vacation_usa\t\n"
-	assert.Equal(t, expected, actual)
+	assert.Equal(t, expected, buf.String())
 }

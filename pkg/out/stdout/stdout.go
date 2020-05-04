@@ -23,6 +23,7 @@ package stdout
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/hbish/smex/pkg/xml"
@@ -30,13 +31,16 @@ import (
 
 // TODO: add ability to change delimiter
 type Writer struct {
+	w io.Writer
 }
 
-func NewWriter() *Writer {
-	return &Writer{}
+func NewWriter(w io.Writer) *Writer {
+	return &Writer{
+		w: w,
+	}
 }
 
-func (w Writer) Write(urls []xml.URL, loc bool) string {
+func (w Writer) Write(urls []xml.URL, loc bool) error {
 	var maxLocLength int
 	var sb strings.Builder
 
@@ -65,6 +69,6 @@ func (w Writer) Write(urls []xml.URL, loc bool) string {
 		}
 		sb.WriteString(fmt.Sprintf("\n"))
 	}
-	fmt.Println(sb.String())
-	return sb.String()
+	_, err := w.w.Write([]byte(sb.String()))
+	return err
 }

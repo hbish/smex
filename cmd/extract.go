@@ -46,10 +46,10 @@ to quickly create a Cobra application.`,
 		if len(args) != 1 {
 			return errors.New("extract expects the location of the sitemap\n")
 		}
-		Remote, _ = cmd.Flags().GetBool("remote")
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		Remote, _ = cmd.Flags().GetBool("remote")
 		sitemap, err := helper.LoadSitemap(args[0], Remote)
 		if err != nil {
 			return err
@@ -61,7 +61,7 @@ to quickly create a Cobra application.`,
 		}
 
 		formats, _ := cmd.Flags().GetStringSlice("formats")
-		writer := out.NewMultiWriter(AppFs, formats)
+		writer := out.NewMultiWriter(AppFs, cmd.OutOrStdout(), formats)
 		loc, _ := cmd.Flags().GetBool("loc")
 		err = writer.Write(urlSet.URL, loc)
 		if err != nil {

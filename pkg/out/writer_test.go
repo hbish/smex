@@ -22,6 +22,7 @@ THE SOFTWARE.
 package out
 
 import (
+	"os"
 	"testing"
 
 	"github.com/spf13/afero"
@@ -32,7 +33,7 @@ import (
 
 func TestNewWriter(t *testing.T) {
 	var fs = afero.NewMemMapFs()
-	w := NewWriter(fs)
+	w := NewWriter(fs, os.Stdout)
 	assert.NotNil(t, w)
 	assert.Equal(t, w.Formats, []Format{Stdout})
 
@@ -46,7 +47,7 @@ func TestNewWriter(t *testing.T) {
 
 func TestNewMultiWriter_NoFormats(t *testing.T) {
 	var fs = afero.NewMemMapFs()
-	w := NewMultiWriter(fs, []string{})
+	w := NewMultiWriter(fs, os.Stdout, []string{})
 	assert.NotNil(t, w)
 	assert.Equal(t, w.Formats, []Format{Stdout})
 
@@ -61,7 +62,7 @@ func TestNewMultiWriter_NoFormats(t *testing.T) {
 
 func TestNewMultiWriter_AllFormats(t *testing.T) {
 	var fs = afero.NewMemMapFs()
-	w := NewMultiWriter(fs, []string{"stdout", "csv", "json"})
+	w := NewMultiWriter(fs, os.Stdout, []string{"stdout", "csv", "json"})
 	assert.NotNil(t, w)
 	assert.Equal(t, w.Formats, []Format{Stdout, Csv, Json})
 

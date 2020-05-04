@@ -22,6 +22,8 @@ THE SOFTWARE.
 package out
 
 import (
+	"io"
+
 	"github.com/hbish/smex/pkg/out/json"
 	"github.com/spf13/afero"
 
@@ -44,22 +46,24 @@ const (
 // Returns a particular writer based on the type
 type SmexWriter struct {
 	fs      afero.Fs
+	w       io.Writer
 	Formats []Format
 }
 
 // NewWriter returns a new SmexWriter that writes to stdout
-func NewWriter(fs afero.Fs) *SmexWriter {
+func NewWriter(fs afero.Fs, w io.Writer) *SmexWriter {
 	return &SmexWriter{
 		fs:      fs,
+		w:       w,
 		Formats: []Format{Stdout},
 	}
 }
 
 // NewMultiWriter returns a new SmexWriter that can be configured
 // to write to multiple destinations.
-func NewMultiWriter(fs afero.Fs, outFormats []string) *SmexWriter {
+func NewMultiWriter(fs afero.Fs, w io.Writer, outFormats []string) *SmexWriter {
 	if len(outFormats) == 0 {
-		return NewWriter(fs)
+		return NewWriter(fs, w)
 	}
 	var formats []Format
 	for _, t := range outFormats {
@@ -68,14 +72,18 @@ func NewMultiWriter(fs afero.Fs, outFormats []string) *SmexWriter {
 
 	return &SmexWriter{
 		fs:      fs,
+		w:       w,
 		Formats: formats,
 	}
 }
 
 func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 	if isFormatRequested(w.Formats, Stdout) {
-		writer := stdout.NewWriter()
-		writer.Write(urls, loc)
+		writer := stdout.NewWriter(w.w)
+		err := writer.Write(urls, loc)
+		if err != nil {
+			return err
+		}
 	}
 
 	if isFormatRequested(w.Formats, Csv) {
