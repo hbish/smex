@@ -58,7 +58,7 @@ lint: prepare-lint # check for errors in code
 	@$(BIN_DIR)/golangci-lint run -p format -p unused -p bugs
 .PHONY: lint
 
-test: prepare-cov lint# run unit tests
+test: prepare-cov # run unit tests
 	@$(BIN_DIR)/gocov test $(PKGS) | $(BIN_DIR)/gocov report
 .PHONY: test
 

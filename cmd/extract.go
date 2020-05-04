@@ -26,8 +26,11 @@ import (
 	"github.com/hbish/smex/pkg/out"
 	"github.com/hbish/smex/pkg/xml"
 	"github.com/pkg/errors"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
+
+var AppFs = afero.NewOsFs()
 
 // extractCmd represents the extract command
 var extractCmd = &cobra.Command{
@@ -58,7 +61,7 @@ to quickly create a Cobra application.`,
 		}
 
 		formats, _ := cmd.Flags().GetStringSlice("formats")
-		writer := out.NewMultiWriter(formats)
+		writer := out.NewMultiWriter(AppFs, formats)
 		loc, _ := cmd.Flags().GetBool("loc")
 		err = writer.Write(urlSet.URL, loc)
 		if err != nil {

@@ -30,26 +30,36 @@ import (
 
 type Writer struct {
 	w      io.Writer
-	pretty bool
+	indent string
 }
 
 func NewWriter(w io.Writer, pretty bool) *Writer {
-	enc := &Writer{
-		w:      w,
-		pretty: pretty,
+	indent := ""
+	if pretty {
+		indent = "  "
 	}
 
-	return enc
+	return &Writer{
+		w:      w,
+		indent: indent,
+	}
 }
 
-func (w Writer) WriteToFile(urls []xml.URL, loc bool) error {
-	marshal, err := json.MarshalIndent(urls, "", "  ")
+func (w Writer) WriteToFile(urls []xml.URL, loc bool) ([]byte, error) {
+	if loc {
+		for i, url := range urls {
+			urls[i] = xml.URL{
+				Loc: url.Loc,
+			}
+		}
+	}
+	marshal, err := json.MarshalIndent(urls, "", w.indent)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	_, err = w.w.Write(marshal)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return marshal, nil
 }

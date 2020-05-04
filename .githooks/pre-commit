@@ -7,6 +7,8 @@ unformatted=$(gofmt -l $gofiles)
 badimports=$(goimports -l $gofiles)
 [ -z "$unformatted" ] && [ -z "$badimports" ] && exit 0
 
+make lint
+
 echo >&2 "Go files must be formatted with gofmt and goimport. Please run:"
 for fn in $unformatted; do
 echo >&2 "  gofmt -w $PWD/$fn"

@@ -24,15 +24,56 @@ package out
 import (
 	"testing"
 
+	"github.com/spf13/afero"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/hbish/smex/pkg/xml"
 )
 
-func TestSmexWriter(t *testing.T) {
-	w := NewWriter()
+func TestNewWriter(t *testing.T) {
+	var fs = afero.NewMemMapFs()
+	w := NewWriter(fs)
+	assert.NotNil(t, w)
+	assert.Equal(t, w.Formats, []Format{Stdout})
+
+	urls := []xml.URL{
+		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
+	}
+	_ = w.Write(urls, false)
+	dir, _ := afero.ReadDir(fs, "")
+	assert.Equal(t, len(dir), 0)
+}
+
+func TestNewMultiWriter_NoFormats(t *testing.T) {
+	var fs = afero.NewMemMapFs()
+	w := NewMultiWriter(fs, []string{})
+	assert.NotNil(t, w)
+	assert.Equal(t, w.Formats, []Format{Stdout})
 
 	urls := []xml.URL{
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
 	}
 
 	_ = w.Write(urls, false)
+	dir, _ := afero.ReadDir(fs, "")
+	assert.Equal(t, len(dir), 0)
+}
+
+func TestNewMultiWriter_AllFormats(t *testing.T) {
+	var fs = afero.NewMemMapFs()
+	w := NewMultiWriter(fs, []string{"stdout", "csv", "json"})
+	assert.NotNil(t, w)
+	assert.Equal(t, w.Formats, []Format{Stdout, Csv, Json})
+
+	urls := []xml.URL{
+		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
+	}
+
+	_ = w.Write(urls, false)
+	readDir, _ := afero.ReadDir(fs, "")
+	for _, info := range readDir {
+		println(info)
+	}
+	dir, _ := afero.ReadDir(fs, "")
+	assert.Equal(t, len(dir), 2)
 }

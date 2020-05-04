@@ -22,9 +22,8 @@ THE SOFTWARE.
 package out
 
 import (
-	"os"
-
 	"github.com/hbish/smex/pkg/out/json"
+	"github.com/spf13/afero"
 
 	"github.com/hbish/smex/pkg/out/csv"
 
@@ -44,21 +43,23 @@ const (
 //
 // Returns a particular writer based on the type
 type SmexWriter struct {
+	fs      afero.Fs
 	Formats []Format
 }
 
 // NewWriter returns a new SmexWriter that writes to stdout
-func NewWriter() *SmexWriter {
+func NewWriter(fs afero.Fs) *SmexWriter {
 	return &SmexWriter{
+		fs:      fs,
 		Formats: []Format{Stdout},
 	}
 }
 
 // NewMultiWriter returns a new SmexWriter that can be configured
 // to write to multiple destinations.
-func NewMultiWriter(outFormats []string) *SmexWriter {
+func NewMultiWriter(fs afero.Fs, outFormats []string) *SmexWriter {
 	if len(outFormats) == 0 {
-		return NewWriter()
+		return NewWriter(fs)
 	}
 	var formats []Format
 	for _, t := range outFormats {
@@ -66,6 +67,7 @@ func NewMultiWriter(outFormats []string) *SmexWriter {
 	}
 
 	return &SmexWriter{
+		fs:      fs,
 		Formats: formats,
 	}
 }
@@ -77,7 +79,7 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 	}
 
 	if isFormatRequested(w.Formats, Csv) {
-		csvFile, err := os.Create("smex-output.csv")
+		csvFile, err := w.fs.Create("smex-output.csv")
 		if err != nil {
 			return err
 		}
@@ -88,13 +90,13 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 	}
 
 	if isFormatRequested(w.Formats, Json) {
-		jsonFile, err := os.Create("smex-output.json")
+		jsonFile, err := w.fs.Create("smex-output.json")
 		if err != nil {
 			return err
 		}
 		defer jsonFile.Close()
 		writer := json.NewWriter(jsonFile, true)
-		_ = writer.WriteToFile(urls, loc)
+		_, _ = writer.WriteToFile(urls, loc)
 	}
 
 	return nil
