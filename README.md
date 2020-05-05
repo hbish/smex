@@ -10,10 +10,14 @@ Smex supports:
 - [x] extraction of urls
 - [x] process local/remote sitemaps
 - [x] output to csv/json
-- [ ] pattern matching on urls
+- [x] pattern matching on urls
 - [ ] url status checking
 - [ ] extraction of images
+- [ ] extraction of video
+- [ ] extraction of news
 - [ ] support for sitemaps with multiple languages
+
+Note: smex is not a sitemap validator and would not check the validity of sitemaps.
 
 ## Usages
 

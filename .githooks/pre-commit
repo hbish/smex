@@ -11,7 +11,7 @@ make lint
 
 echo >&2 "Go files must be formatted with gofmt and goimport. Please run:"
 for fn in $unformatted; do
-echo >&2 "  gofmt -w $PWD/$fn"
+echo >&2 "  gofmt -s -w $PWD/$fn"
 done
 for fn in $badimports; do
 echo >&2 "  goimports -w $PWD/$fn"
