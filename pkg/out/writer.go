@@ -78,6 +78,7 @@ func NewMultiWriter(fs afero.Fs, w io.Writer, outFormat string) *SmexWriter {
 	}
 }
 
+// write a slice of URL
 func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 
 	switch w.Format {

@@ -26,22 +26,16 @@ import (
 	"github.com/hbish/smex/pkg/out"
 	"github.com/hbish/smex/pkg/xml"
 	"github.com/pkg/errors"
-	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
-
-var AppFs = afero.NewOsFs()
 
 // extractCmd represents the extract command
 var extractCmd = &cobra.Command{
 	Use:   "extract [URI]",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "extract the url component of sitemap",
+	Long: `extract the url component of a sitemap
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+additional flags are supply to either extract only loc and filter by a specific pattern`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("extract expects the location of the sitemap\n")

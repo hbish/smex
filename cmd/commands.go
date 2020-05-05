@@ -25,8 +25,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/afero"
+
 	"github.com/spf13/cobra"
 )
+
+var AppFs = afero.NewOsFs()
 
 var Verbose bool
 var Remote bool
@@ -57,7 +61,7 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Remote, "remote", "r", false, "indicate the sitemap is remote")
 	rootCmd.PersistentFlags().BoolVarP(&Index, "index", "i", false, "parse sitemap index - TODO")
-	rootCmd.PersistentFlags().StringVarP(&Pattern, "pattern", "p", "", "parse loc based on regex pattern - TODO")
+	rootCmd.PersistentFlags().StringVarP(&Pattern, "pattern", "p", "", "parse loc based on regex pattern")
 	rootCmd.PersistentFlags().StringVarP(&Format, "format", "f", "", "output format (stdout, csv, json), defaults to stdout")
 
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
