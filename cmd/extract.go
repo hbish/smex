@@ -49,13 +49,12 @@ to quickly create a Cobra application.`,
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		Remote, _ = cmd.Flags().GetBool("remote")
 		sitemap, err := helper.LoadSitemap(args[0], Remote)
 		if err != nil {
 			return err
 		}
 
-		urlSet, err := xml.UnmarshalXML(sitemap)
+		urlSet, err := xml.UnmarshalXMLF(sitemap, Pattern)
 		if err != nil {
 			return errors.Wrap(err, "unable to parse the xml content")
 		}

@@ -41,7 +41,7 @@ func TestFromXMLWithExampleXML(t *testing.T) {
 </urlset>
 `
 
-	actual, err := UnmarshalXML([]byte(input))
+	actual, err := UnmarshalXMLF([]byte(input), "")
 
 	var expected = URLSet{
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -85,22 +85,48 @@ func TestFromXMLWithExampleXMLMultipleURLs(t *testing.T) {
 </urlset>
 `
 
-	actual, err := UnmarshalXML([]byte(input))
+	t.Run("No Filter", func(t *testing.T) {
+		actual, err := UnmarshalXMLF([]byte(input), "")
 
-	var expected = URLSet{
-		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
-		XMLNs:   "http://www.sitemaps.org/schemas/sitemap/0.9",
-		URL: []URL{
-			{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
-			{Loc: "http://www.example.com/catalog?item=12&desc=vacation_hawaii", LastMod: "", ChangeFreq: "weekly", Priority: 0},
-			{Loc: "http://www.example.com/catalog?item=73&desc=vacation_new_zealand", LastMod: "2004-12-23", ChangeFreq: "weekly", Priority: 0},
-			{Loc: "http://www.example.com/catalog?item=74&desc=vacation_newfoundland", LastMod: "2004-12-23T18:00:15+00:00", ChangeFreq: "", Priority: 0.3},
-			{Loc: "http://www.example.com/catalog?item=83&desc=vacation_usa", LastMod: "2004-11-23", ChangeFreq: "", Priority: 0},
-		},
-	}
-	if assert.NotNil(t, actual) && assert.Nil(t, err) {
-		assert.EqualValues(t, *actual, expected)
-	}
+		var expected = URLSet{
+			XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
+			XMLNs:   "http://www.sitemaps.org/schemas/sitemap/0.9",
+			URL: []URL{
+				{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
+				{Loc: "http://www.example.com/catalog?item=12&desc=vacation_hawaii", LastMod: "", ChangeFreq: "weekly", Priority: 0},
+				{Loc: "http://www.example.com/catalog?item=73&desc=vacation_new_zealand", LastMod: "2004-12-23", ChangeFreq: "weekly", Priority: 0},
+				{Loc: "http://www.example.com/catalog?item=74&desc=vacation_newfoundland", LastMod: "2004-12-23T18:00:15+00:00", ChangeFreq: "", Priority: 0.3},
+				{Loc: "http://www.example.com/catalog?item=83&desc=vacation_usa", LastMod: "2004-11-23", ChangeFreq: "", Priority: 0},
+			},
+		}
+		if assert.NotNil(t, actual) && assert.Nil(t, err) {
+			assert.EqualValues(t, *actual, expected)
+		}
+	})
+
+	t.Run("Working Filter", func(t *testing.T) {
+		actual, err := UnmarshalXMLF([]byte(input), "catalog")
+
+		var expected = URLSet{
+			XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
+			XMLNs:   "http://www.sitemaps.org/schemas/sitemap/0.9",
+			URL: []URL{
+				{Loc: "http://www.example.com/catalog?item=12&desc=vacation_hawaii", LastMod: "", ChangeFreq: "weekly", Priority: 0},
+				{Loc: "http://www.example.com/catalog?item=73&desc=vacation_new_zealand", LastMod: "2004-12-23", ChangeFreq: "weekly", Priority: 0},
+				{Loc: "http://www.example.com/catalog?item=74&desc=vacation_newfoundland", LastMod: "2004-12-23T18:00:15+00:00", ChangeFreq: "", Priority: 0.3},
+				{Loc: "http://www.example.com/catalog?item=83&desc=vacation_usa", LastMod: "2004-11-23", ChangeFreq: "", Priority: 0},
+			},
+		}
+		if assert.NotNil(t, actual) && assert.Nil(t, err) {
+			assert.EqualValues(t, *actual, expected)
+		}
+	})
+
+	t.Run("Invalid Filter", func(t *testing.T) {
+		_, err := UnmarshalXMLF([]byte(input), "*")
+
+		assert.EqualError(t, err, "error parsing regexp: missing argument to repetition operator: `*`")
+	})
 }
 
 func TestFromXMLWithReal(t *testing.T) {
@@ -111,7 +137,7 @@ func TestFromXMLWithReal(t *testing.T) {
 </urlset>
 `
 
-	actual, err := UnmarshalXML([]byte(input))
+	actual, err := UnmarshalXMLF([]byte(input), "")
 
 	var expected = URLSet{
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -129,7 +155,7 @@ func TestFromXMLWithReal(t *testing.T) {
 func TestFromXMLWithInvalidHTML(t *testing.T) {
 	input := `<html></html>`
 
-	actual, err := UnmarshalXML([]byte(input))
+	actual, err := UnmarshalXMLF([]byte(input), "")
 	assert.Nil(t, actual)
 	assert.EqualError(t, err, "expected element type <urlset> but have <html>")
 }
@@ -137,7 +163,7 @@ func TestFromXMLWithInvalidHTML(t *testing.T) {
 func TestFromXMLWithInvalidRandomString(t *testing.T) {
 	input := `easy as 123`
 
-	actual, err := UnmarshalXML([]byte(input))
+	actual, err := UnmarshalXMLF([]byte(input), "")
 	assert.Nil(t, actual)
 	assert.EqualError(t, err, "EOF")
 }

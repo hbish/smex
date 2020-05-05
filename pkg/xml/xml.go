@@ -21,7 +21,10 @@ THE SOFTWARE.
 */
 package xml
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"regexp"
+)
 
 // Sitemap XML Protocol Implementation
 // - info: https://www.sitemaps.org/protocol.html
@@ -41,7 +44,7 @@ type URL struct {
 	Priority   float32 `xml:"priority,omitempty" json:"priority,omitempty"`
 }
 
-func UnmarshalXML(rawXml []byte) (*URLSet, error) {
+func unmarshalXML(rawXml []byte) (*URLSet, error) {
 	urlSet := URLSet{}
 
 	err := xml.Unmarshal(rawXml, &urlSet)
@@ -51,4 +54,30 @@ func UnmarshalXML(rawXml []byte) (*URLSet, error) {
 	}
 
 	return &urlSet, nil
+}
+
+func UnmarshalXMLF(rawXml []byte, pattern string) (*URLSet, error) {
+	urlSet, err := unmarshalXML(rawXml)
+	if err != nil {
+		return nil, err
+	}
+
+	if pattern != "" {
+		regex, err := regexp.Compile(pattern)
+		if err != nil {
+			return nil, err
+		}
+
+		var filteredUrls []URL
+		for _, url := range urlSet.URL {
+			matched := regex.MatchString(url.Loc)
+			if matched {
+				filteredUrls = append(filteredUrls, url)
+			}
+		}
+
+		urlSet.URL = filteredUrls
+	}
+
+	return urlSet, nil
 }
