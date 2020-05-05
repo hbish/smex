@@ -41,7 +41,7 @@ func TestFromXMLWithExampleXML(t *testing.T) {
 </urlset>
 `
 
-	actual, err := UnmarshalXMLF([]byte(input), "")
+	actual, err := UnmarshalXMLP([]byte(input), "")
 
 	var expected = URLSet{
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -86,7 +86,7 @@ func TestFromXMLWithExampleXMLMultipleURLs(t *testing.T) {
 `
 
 	t.Run("No Filter", func(t *testing.T) {
-		actual, err := UnmarshalXMLF([]byte(input), "")
+		actual, err := UnmarshalXMLP([]byte(input), "")
 
 		var expected = URLSet{
 			XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -105,7 +105,7 @@ func TestFromXMLWithExampleXMLMultipleURLs(t *testing.T) {
 	})
 
 	t.Run("Working Filter", func(t *testing.T) {
-		actual, err := UnmarshalXMLF([]byte(input), "catalog")
+		actual, err := UnmarshalXMLP([]byte(input), "catalog")
 
 		var expected = URLSet{
 			XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
@@ -123,7 +123,7 @@ func TestFromXMLWithExampleXMLMultipleURLs(t *testing.T) {
 	})
 
 	t.Run("Invalid Filter", func(t *testing.T) {
-		_, err := UnmarshalXMLF([]byte(input), "*")
+		_, err := UnmarshalXMLP([]byte(input), "*")
 
 		assert.EqualError(t, err, "error parsing regexp: missing argument to repetition operator: `*`")
 	})
@@ -132,18 +132,19 @@ func TestFromXMLWithExampleXMLMultipleURLs(t *testing.T) {
 func TestFromXMLWithReal(t *testing.T) {
 	input := `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url> <loc>https://hbish.com/about/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
+<url> <loc>https://hbish.com/about/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> <image:image> <image:loc>https://hbish.com/sample.png</image:loc> <image:caption><![CDATA[Sample Image]]></image:caption> </image:image></url>
 <url> <loc>https://hbish.com/talks/</loc> <changefreq>daily</changefreq> <priority>0.7</priority> </url>
 </urlset>
 `
 
-	actual, err := UnmarshalXMLF([]byte(input), "")
+	actual, err := UnmarshalXMLP([]byte(input), "")
 
 	var expected = URLSet{
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
 		XMLNs:   "http://www.sitemaps.org/schemas/sitemap/0.9",
 		URL: []URL{
-			{Loc: "https://hbish.com/about/", LastMod: "", ChangeFreq: "daily", Priority: 0.7},
+			{Loc: "https://hbish.com/about/", LastMod: "", ChangeFreq: "daily", Priority: 0.7,
+				Image: []Image{Image{Loc: "https://hbish.com/sample.png", Title: "", Caption: "Sample Image", GeoLocation: "", License: ""}}},
 			{Loc: "https://hbish.com/talks/", LastMod: "", ChangeFreq: "daily", Priority: 0.7},
 		},
 	}
@@ -155,7 +156,7 @@ func TestFromXMLWithReal(t *testing.T) {
 func TestFromXMLWithInvalidHTML(t *testing.T) {
 	input := `<html></html>`
 
-	actual, err := UnmarshalXMLF([]byte(input), "")
+	actual, err := UnmarshalXMLP([]byte(input), "")
 	assert.Nil(t, actual)
 	assert.EqualError(t, err, "expected element type <urlset> but have <html>")
 }
@@ -163,7 +164,7 @@ func TestFromXMLWithInvalidHTML(t *testing.T) {
 func TestFromXMLWithInvalidRandomString(t *testing.T) {
 	input := `easy as 123`
 
-	actual, err := UnmarshalXMLF([]byte(input), "")
+	actual, err := UnmarshalXMLP([]byte(input), "")
 	assert.Nil(t, actual)
 	assert.EqualError(t, err, "EOF")
 }

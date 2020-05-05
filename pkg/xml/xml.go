@@ -22,6 +22,7 @@ THE SOFTWARE.
 package xml
 
 import (
+	"bytes"
 	"encoding/xml"
 	"regexp"
 )
@@ -42,12 +43,30 @@ type URL struct {
 	LastMod    string  `xml:"lastmod,omitempty" json:"lastmod,omitempty"`
 	ChangeFreq string  `xml:"changefreq,omitempty" json:"changefreq,omitempty"`
 	Priority   float32 `xml:"priority,omitempty" json:"priority,omitempty"`
+	Image      []Image `xml:"image,omitempty" json:"image,omitempty"`
+}
+
+type Image struct {
+	Loc         string `xml:"loc" json:"loc"`
+	Title       string `xml:"title,omitempty" json:"title,omitempty"`
+	Caption     string `xml:"caption,omitempty" json:"caption,omitempty"`
+	GeoLocation string `xml:"geo_location,omitempty" json:"geo_location,omitempty"`
+	License     string `xml:"license,omitempty" json:"license,omitempty"`
 }
 
 func unmarshalXML(rawXml []byte) (*URLSet, error) {
 	urlSet := URLSet{}
 
-	err := xml.Unmarshal(rawXml, &urlSet)
+	// validate xml without storing
+	if err := xml.Unmarshal(rawXml, new(interface{})); err != nil {
+		return nil, err
+	}
+
+	// decode xml and trim white spaces
+	reader := bytes.NewReader(rawXml)
+	d := xml.NewDecoder(reader)
+	td := xml.NewTokenDecoder(TrimmingTokenReader{d})
+	err := td.Decode(&urlSet)
 
 	if err != nil {
 		return nil, err
@@ -56,7 +75,8 @@ func unmarshalXML(rawXml []byte) (*URLSet, error) {
 	return &urlSet, nil
 }
 
-func UnmarshalXMLF(rawXml []byte, pattern string) (*URLSet, error) {
+// unmarshal xml and filter by pattern
+func UnmarshalXMLP(rawXml []byte, pattern string) (*URLSet, error) {
 	urlSet, err := unmarshalXML(rawXml)
 	if err != nil {
 		return nil, err
@@ -80,4 +100,18 @@ func UnmarshalXMLF(rawXml []byte, pattern string) (*URLSet, error) {
 	}
 
 	return urlSet, nil
+}
+
+// Trimming TokenReader
+type TrimmingTokenReader struct {
+	dec *xml.Decoder
+}
+
+// Trimming token
+func (tr TrimmingTokenReader) Token() (xml.Token, error) {
+	t, err := tr.dec.Token()
+	if cd, ok := t.(xml.CharData); ok {
+		t = xml.CharData(bytes.TrimSpace(cd))
+	}
+	return t, err
 }

@@ -48,7 +48,7 @@ additional flags are supply to either extract only loc and filter by a specific 
 			return err
 		}
 
-		urlSet, err := xml.UnmarshalXMLF(sitemap, Pattern)
+		urlSet, err := xml.UnmarshalXMLP(sitemap, Pattern)
 		if err != nil {
 			return errors.Wrap(err, "unable to parse the xml content")
 		}

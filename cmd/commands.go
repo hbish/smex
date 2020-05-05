@@ -44,9 +44,7 @@ var rootCmd = &cobra.Command{
 	Short: "A utility to process sitemaps",
 	Long: `Smex - a CLI library processes sitemaps in GO.
 
-Smex is short for Sitemap Extractor and it support extracting and converting sitemaps 
-to various formats`,
-	SilenceUsage:  true,
+Smex is short for Sitemap Extractor and it support extracting and checking of sitemaps`,
 	SilenceErrors: true,
 }
 

@@ -27,21 +27,9 @@ The following command extracts yoast's post sitemaps and prints to stdout
 You can also point the extract at a sitemap locally
 `smex extract ~/Download/sitemap.xml`
 
-### Convert
-
-To covert sitemap into another format
-
-TODO
-
 ### Check
 
 To check the status of the pages
-
-TODO
-
-### Validate 
-
-To validate if the sitemap is valid
 
 TODO
 
