@@ -25,11 +25,12 @@ import (
 	"io"
 
 	"github.com/hbish/smex/pkg/out/json"
+	"github.com/hbish/smex/pkg/out/stdout"
+
 	"github.com/spf13/afero"
 
 	"github.com/hbish/smex/pkg/out/csv"
 
-	"github.com/hbish/smex/pkg/out/stdout"
 	"github.com/hbish/smex/pkg/xml"
 )
 
@@ -45,48 +46,42 @@ const (
 //
 // Returns a particular writer based on the type
 type SmexWriter struct {
-	fs      afero.Fs
-	w       io.Writer
-	Formats []Format
+	fs     afero.Fs
+	w      io.Writer
+	Format Format
 }
 
 // NewWriter returns a new SmexWriter that writes to stdout
 func NewWriter(fs afero.Fs, w io.Writer) *SmexWriter {
 	return &SmexWriter{
-		fs:      fs,
-		w:       w,
-		Formats: []Format{Stdout},
+		fs:     fs,
+		w:      w,
+		Format: Stdout,
 	}
 }
 
 // NewMultiWriter returns a new SmexWriter that can be configured
 // to write to multiple destinations.
-func NewMultiWriter(fs afero.Fs, w io.Writer, outFormats []string) *SmexWriter {
-	if len(outFormats) == 0 {
-		return NewWriter(fs, w)
-	}
-	var formats []Format
-	for _, t := range outFormats {
-		formats = append(formats, Format(t))
+func NewMultiWriter(fs afero.Fs, w io.Writer, outFormat string) *SmexWriter {
+	if outFormat == "" {
+		return &SmexWriter{
+			fs:     fs,
+			w:      w,
+			Format: Stdout,
+		}
 	}
 
 	return &SmexWriter{
-		fs:      fs,
-		w:       w,
-		Formats: formats,
+		fs:     fs,
+		w:      w,
+		Format: Format(outFormat),
 	}
 }
 
 func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
-	if isFormatRequested(w.Formats, Stdout) {
-		writer := stdout.NewWriter(w.w)
-		err := writer.Write(urls, loc)
-		if err != nil {
-			return err
-		}
-	}
 
-	if isFormatRequested(w.Formats, Csv) {
+	switch w.Format {
+	case Csv:
 		csvFile, err := w.fs.Create("smex-output.csv")
 		if err != nil {
 			return err
@@ -95,9 +90,7 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 		writer := csv.NewWriter(csvFile, ',')
 		defer writer.Flush()
 		_, _ = writer.WriteToFile(urls, loc)
-	}
-
-	if isFormatRequested(w.Formats, Json) {
+	case Json:
 		jsonFile, err := w.fs.Create("smex-output.json")
 		if err != nil {
 			return err
@@ -105,16 +98,13 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 		defer jsonFile.Close()
 		writer := json.NewWriter(jsonFile, true)
 		_, _ = writer.WriteToFile(urls, loc)
+	default:
+		writer := stdout.NewWriter(w.w)
+		err := writer.Write(urls, loc)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
-}
-
-func isFormatRequested(fs []Format, format Format) bool {
-	for _, f := range fs {
-		if format == f {
-			return true
-		}
-	}
-	return false
 }

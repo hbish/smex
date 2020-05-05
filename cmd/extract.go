@@ -60,8 +60,7 @@ to quickly create a Cobra application.`,
 			return errors.Wrap(err, "unable to parse the xml content")
 		}
 
-		formats, _ := cmd.Flags().GetStringSlice("formats")
-		writer := out.NewMultiWriter(AppFs, cmd.OutOrStdout(), formats)
+		writer := out.NewMultiWriter(AppFs, cmd.OutOrStdout(), Format)
 		loc, _ := cmd.Flags().GetBool("loc")
 		err = writer.Write(urlSet.URL, loc)
 		if err != nil {

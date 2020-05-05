@@ -35,7 +35,7 @@ func TestNewWriter(t *testing.T) {
 	var fs = afero.NewMemMapFs()
 	w := NewWriter(fs, os.Stdout)
 	assert.NotNil(t, w)
-	assert.Equal(t, w.Formats, []Format{Stdout})
+	assert.Equal(t, w.Format, Stdout)
 
 	urls := []xml.URL{
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
@@ -47,9 +47,9 @@ func TestNewWriter(t *testing.T) {
 
 func TestNewMultiWriter_NoFormats(t *testing.T) {
 	var fs = afero.NewMemMapFs()
-	w := NewMultiWriter(fs, os.Stdout, []string{})
+	w := NewMultiWriter(fs, os.Stdout, "")
 	assert.NotNil(t, w)
-	assert.Equal(t, w.Formats, []Format{Stdout})
+	assert.Equal(t, w.Format, Stdout)
 
 	urls := []xml.URL{
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
@@ -60,11 +60,11 @@ func TestNewMultiWriter_NoFormats(t *testing.T) {
 	assert.Equal(t, len(dir), 0)
 }
 
-func TestNewMultiWriter_AllFormats(t *testing.T) {
+func TestNewMultiWriter_Csv(t *testing.T) {
 	var fs = afero.NewMemMapFs()
-	w := NewMultiWriter(fs, os.Stdout, []string{"stdout", "csv", "json"})
+	w := NewMultiWriter(fs, os.Stdout, "csv")
 	assert.NotNil(t, w)
-	assert.Equal(t, w.Formats, []Format{Stdout, Csv, Json})
+	assert.Equal(t, w.Format, Csv)
 
 	urls := []xml.URL{
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
@@ -76,5 +76,24 @@ func TestNewMultiWriter_AllFormats(t *testing.T) {
 		println(info)
 	}
 	dir, _ := afero.ReadDir(fs, "")
-	assert.Equal(t, len(dir), 2)
+	assert.Equal(t, len(dir), 1)
+}
+
+func TestNewMultiWriter_Json(t *testing.T) {
+	var fs = afero.NewMemMapFs()
+	w := NewMultiWriter(fs, os.Stdout, "json")
+	assert.NotNil(t, w)
+	assert.Equal(t, w.Format, Json)
+
+	urls := []xml.URL{
+		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
+	}
+
+	_ = w.Write(urls, false)
+	readDir, _ := afero.ReadDir(fs, "")
+	for _, info := range readDir {
+		println(info)
+	}
+	dir, _ := afero.ReadDir(fs, "")
+	assert.Equal(t, len(dir), 1)
 }
