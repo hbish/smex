@@ -16,3 +16,4 @@ vendor/
 build/
 bin/
 smex-output*
+dist/

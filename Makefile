@@ -1,5 +1,5 @@
 NAME=smex
-VERSION := $(shell git describe --tags --always --dirty)
+VERSION := $(shell cat ./VERSION)
 PKGS := $(shell go list ./... | grep -v vendor)
 
 BIN_DIR := $(CURDIR)/bin
@@ -24,18 +24,23 @@ prepare: prepare-lint prepare-cov # prepare ci dependency
 		echo "[go get] installing gox";\
 		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/mitchellh/gox;\
 	fi
-	@if [ -z `which $(BIN_DIR)/github-release` ]; then \
-		echo "[go get] installing github-release";\
-		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/buildkite/github-release;\
+	@if [ -z `which $(BIN_DIR)/ghr` ]; then \
+		echo "[go get] installing ghr";\
+		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/tcnksm/ghr;\
+	fi
+	@if [ -z `which $(BIN_DIR)/semantics` ]; then \
+		echo "[go get] installing semantics";\
+		GO111MODULE=off GOBIN=$(BIN_DIR) go get github.com/stevenmatthewt/semantics;\
 	fi
 
 init: mod # init repo for local development
 	git config core.hooksPath .githooks
 .PHONY: init
 
-build-ci: prepare build # run ci build
+build-ci: prepare build dist # run ci build
 
 build: mod # build and compile smex excutables
+	@rm -rf build/
 	@$(BIN_DIR)/gox -ldflags "-X main.Version=$(VERSION)" \
 	-osarch="darwin/amd64" \
 	-osarch="linux/386" \
@@ -43,8 +48,17 @@ build: mod # build and compile smex excutables
 	-osarch="windows/amd64" \
 	-osarch="windows/386" \
 	-output "build/{{.Dir}}_$(VERSION)_{{.OS}}_{{.Arch}}/$(NAME)" \
-	${SOURCE_FILES}
+	${PKGS}
 .PHONY: build
+
+dist: # prepare for distribution
+	$(eval FILES := $(shell ls build))
+	@rm -rf dist && mkdir dist
+	@for f in $(FILES); do \
+		(cd $(shell pwd)/build/$$f && tar -cvzf ../../dist/$$f.tar.gz *); \
+		(cd $(shell pwd)/dist && shasum -a 512 $$f.tar.gz > $$f.sha512); \
+		echo $$f; \
+	done
 
 clean: # remove build artifacts
 	@rm -rf $(BUILD_DIR)
@@ -63,6 +77,15 @@ test: prepare-cov # run unit tests
 .PHONY: test
 
 test-ci: lint test # run ci test
+
+release-ci: dist # run ci release
+	tag=$(@$(BIN_DIR)/semantics --output-tag)
+	if [ "$tag" ]; then
+	  @$(BIN_DIR)/ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag dist/
+	else
+	  echo "The commit message(s) did not indicate a major/minor/patch version."
+	fi
+.PHONY: release-ci
 
 help: Makefiles
 	@echo
