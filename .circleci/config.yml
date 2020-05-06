@@ -24,6 +24,12 @@ commands:
           key: go-modules-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+  publish_to_github:
+    steps:
+      - add_ssh_keys
+      - run:
+          name: create release
+          command: make release-ci
 
 jobs:
   go-build:
@@ -39,9 +45,18 @@ jobs:
       - run:
           name: Run Test & Lint
           command: make test-ci
+  go-release:
+    parameters:
+      go-version:
+        type: string
+    executor:
+      name: go-exec
+      go-version: << parameters.go-version >>
+    steps:
       - run:
           name: Build Artifacts
           command: make build-ci
+      - publish_to_github
 
 workflows:
   version: 2
@@ -49,3 +64,9 @@ workflows:
     jobs:
       - go-build:
           go-version: "1.14"
+      - go-release:
+          go-version: "1.14"
+          filters:
+            branches:
+              only: master
+
