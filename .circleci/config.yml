@@ -53,6 +53,8 @@ jobs:
       name: go-exec
       go-version: << parameters.go-version >>
     steps:
+      - checkout
+      - go_mod_download
       - run:
           name: Build Artifacts
           command: make build-ci
