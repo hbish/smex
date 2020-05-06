@@ -79,11 +79,9 @@ test: prepare-cov # run unit tests
 test-ci: lint test # run ci test
 
 release-ci: dist # run ci release
-	tag=$(@$(BIN_DIR)/semantics --output-tag)
-	if [ "$tag" ]; then
-	  @$(BIN_DIR)/ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME --replace $tag dist/
-	else
-	  echo "The commit message(s) did not indicate a major/minor/patch version."
+	$(eval TAG := $(shell $(BIN_DIR)/semantics -output-tag))
+	if [ "$(TAG)" ]; then \
+	  $(BIN_DIR)/ghr -t $(GITHUB_TOKEN) -u $(CIRCLE_PROJECT_USERNAME) -r $(CIRCLE_PROJECT_REPONAME) --replace $(TAG) dist/; \
 	fi
 .PHONY: release-ci
 

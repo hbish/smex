@@ -28,7 +28,7 @@ commands:
     steps:
       - add_ssh_keys
       - run:
-          name: create release
+          name: Create release
           command: make release-ci
 
 jobs:
@@ -53,6 +53,8 @@ jobs:
       name: go-exec
       go-version: << parameters.go-version >>
     steps:
+      - checkout
+      - go_mod_download
       - run:
           name: Build Artifacts
           command: make build-ci
@@ -66,6 +68,8 @@ workflows:
           go-version: "1.14"
       - go-release:
           go-version: "1.14"
+          requires:
+            - go-build
           filters:
             branches:
               only: master
