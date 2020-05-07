@@ -36,7 +36,7 @@ var Verbose bool
 var Remote bool
 var Index bool
 var Format string
-var Output string
+var Filename string
 var Pattern string
 
 // rootCmd represents the base command when called without any subcommands
@@ -62,7 +62,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Index, "index", "i", false, "parse sitemap index - TODO")
 	rootCmd.PersistentFlags().StringVarP(&Pattern, "pattern", "p", "", "parse loc based on regex pattern")
 	rootCmd.PersistentFlags().StringVarP(&Format, "format", "f", "", "output format (csv, json), defaults to stdout")
-	rootCmd.PersistentFlags().StringVarP(&Output, "output", "o", "smex-output", "output filename, defaults to smex-output")
+	rootCmd.PersistentFlags().StringVarP(&Filename, "output", "o", "smex-output", "output filename, defaults to smex-output")
 
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 }
