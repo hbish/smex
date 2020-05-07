@@ -7,6 +7,8 @@ A blazing fast CLI application that processes sitemaps in Go Lang.
 [![GoDoc](https://godoc.org/github.com/hbish.smex?status.svg)](https://godoc.org/github.com/hbish/smex)
 ![](https://img.shields.io/badge/license-MIT-blue.svg)
 [![smex](https://circleci.com/gh/hbish/smex.svg?style=shield)](https://circleci.com/gh/hbish/smex)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hbish/smex)](https://goreportcard.com/report/github.com/hbish/smex)
+[![Coverage Status](https://coveralls.io/repos/github/hbish/smex/badge.svg?branch=develop)](https://coveralls.io/github/hbish/smex?branch=develop)
 
 Smex is short for **S**ite**M**ap **EX**trator. It can handle various operations related to sitemaps with more being 
 build over time. Smex has grown from the frustration of migrating multiple websites in the past and handling changes in 
@@ -72,7 +74,7 @@ Currently cross-compiled for:
 
 - Mac (64 bit)
 - Linux (32/64 bit)
-- Windows (32/64 bit) - __untested, help me test 😊__
+- Windows (32/64 bit)
 
 Latest versions can be downloaded via [Releases](https://github.com/hbish/smex/releases).
 
