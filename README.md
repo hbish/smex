@@ -28,6 +28,8 @@ Smex supports:
 Note: smex is not a sitemap validator and would not check the validity of sitemaps against the xsd. It will try to parse
 the sitemaps on best effort.
 
+[![asciicast](https://asciinema.org/a/327587.svg)](https://asciinema.org/a/327587)
+
 ## Usages
 
 ### Extract
