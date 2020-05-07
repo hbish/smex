@@ -43,8 +43,14 @@ jobs:
       - checkout
       - go_mod_download
       - run:
-          name: Run Test & Lint
-          command: make test-ci
+          name: Run Lint
+          command: make lint
+      - run:
+          name: run test & coverage
+          command: |
+            GOFLAGS=-mod= go get github.com/mattn/goveralls
+            go test -v -cover -race -timeout=60s -coverprofile=./coverage.out $(go list ./...)
+            GOFLAGS=-mod= goveralls -coverprofile=./coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
   go-release:
     parameters:
       go-version:

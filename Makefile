@@ -76,8 +76,6 @@ test: prepare-cov # run unit tests
 	@$(BIN_DIR)/gocov test $(PKGS) | $(BIN_DIR)/gocov report
 .PHONY: test
 
-test-ci: lint test # run ci test
-
 release-ci: dist # run ci release
 	$(eval TAG := $(shell $(BIN_DIR)/semantics -output-tag))
 	if [ "$(TAG)" ]; then \
