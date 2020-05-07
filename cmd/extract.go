@@ -55,7 +55,7 @@ additional flags are supply to either extract only loc and filter by a specific 
 
 		writer := out.NewMultiWriter(AppFs, cmd.OutOrStdout(), Format)
 		loc, _ := cmd.Flags().GetBool("loc")
-		err = writer.Write(urlSet.URL, loc)
+		err = writer.Write(urlSet.URL, loc, Filename)
 		if err != nil {
 			return errors.Wrap(err, "unable to write output")
 		}

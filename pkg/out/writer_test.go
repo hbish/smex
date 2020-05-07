@@ -40,7 +40,7 @@ func TestNewWriter(t *testing.T) {
 	urls := []xml.URL{
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
 	}
-	_ = w.Write(urls, false)
+	_ = w.Write(urls, false, "test-file")
 	dir, _ := afero.ReadDir(fs, "")
 	assert.Equal(t, len(dir), 0)
 }
@@ -55,7 +55,7 @@ func TestNewMultiWriter_NoFormats(t *testing.T) {
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
 	}
 
-	_ = w.Write(urls, false)
+	_ = w.Write(urls, false, "test-file")
 	dir, _ := afero.ReadDir(fs, "")
 	assert.Equal(t, len(dir), 0)
 }
@@ -70,13 +70,11 @@ func TestNewMultiWriter_Csv(t *testing.T) {
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
 	}
 
-	_ = w.Write(urls, false)
-	readDir, _ := afero.ReadDir(fs, "")
-	for _, info := range readDir {
-		println(info)
-	}
+	_ = w.Write(urls, false, "test-file")
 	dir, _ := afero.ReadDir(fs, "")
-	assert.Equal(t, len(dir), 1)
+	if assert.Equal(t, len(dir), 1) {
+		assert.Equal(t, dir[0].Name(), "test-file.csv")
+	}
 }
 
 func TestNewMultiWriter_Json(t *testing.T) {
@@ -89,11 +87,10 @@ func TestNewMultiWriter_Json(t *testing.T) {
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},
 	}
 
-	_ = w.Write(urls, false)
-	readDir, _ := afero.ReadDir(fs, "")
-	for _, info := range readDir {
-		println(info)
-	}
+	_ = w.Write(urls, false, "test-file")
 	dir, _ := afero.ReadDir(fs, "")
 	assert.Equal(t, len(dir), 1)
+	if assert.Equal(t, len(dir), 1) {
+		assert.Equal(t, dir[0].Name(), "test-file.json")
+	}
 }

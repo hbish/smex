@@ -79,11 +79,11 @@ func NewMultiWriter(fs afero.Fs, w io.Writer, outFormat string) *SmexWriter {
 }
 
 // write a slice of URL
-func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
+func (w SmexWriter) Write(urls []xml.URL, loc bool, filename string) error {
 
 	switch w.Format {
 	case Csv:
-		csvFile, err := w.fs.Create("smex-output.csv")
+		csvFile, err := w.fs.Create(filename + ".csv")
 		if err != nil {
 			return err
 		}
@@ -92,7 +92,7 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool) error {
 		defer writer.Flush()
 		_, _ = writer.WriteToFile(urls, loc)
 	case Json:
-		jsonFile, err := w.fs.Create("smex-output.json")
+		jsonFile, err := w.fs.Create(filename + ".json")
 		if err != nil {
 			return err
 		}
