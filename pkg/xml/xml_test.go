@@ -139,8 +139,11 @@ func TestFromXMLWithAllInOneExample(t *testing.T) {
 		XMLName: xml.Name{Space: "http://www.sitemaps.org/schemas/sitemap/0.9", Local: "urlset"},
 		XMLNs:   "http://www.sitemaps.org/schemas/sitemap/0.9",
 		URL: []URL{{Loc: "http://www.example.com/", LastMod: "2020-05-05T12:41:54Z", ChangeFreq: "always", Priority: 1,
-			Image: []Image{{Loc: "http://www.example.com/example.jpg", Title: "", Caption: "", GeoLocation: "", License: ""}}},
-		}}
+			Image: []Image{{Loc: "http://www.example.com/example.jpg", Title: "", Caption: "", GeoLocation: "", License: ""}},
+			Video: []Video{{ThumbnailLoc: "", Title: "example title", Description: "example description", ContentLoc: "", PlayerLoc: "http://www.example.com/v/video", Duration: 110, ExpirationDate: "", Rating: 0, ViewCount: 0, PublicationDate: "2010-10-05T18:52:47.000Z", FamilyFriendly: "", Restriction: "", Platform: "", Price: 0, RequiresSubscription: "", Uploader: "", Live: "", Tag: []string(nil), Category: ""}},
+			News:  []News{{Publication: Publication{Name: "The Example", Language: "en"}, PublicationDate: "2020-05-05T13:41:54Z", Title: "The Great Example", Genres: "", Keywords: "", Access: "Subscription", StockTickers: ""}}}},
+	}
+
 	if assert.NotNil(t, actual) && assert.Nil(t, err) {
 		assert.EqualValues(t, *actual, expected)
 	}
