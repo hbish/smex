@@ -5,6 +5,7 @@ A blazing fast CLI application that processes sitemaps in Go Lang.
 ---
 
 [![GoDoc](https://godoc.org/github.com/hbish.smex?status.svg)](https://godoc.org/github.com/hbish/smex)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fhbish%2Fsmex.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fhbish%2Fsmex?ref=badge_shield)
 ![](https://img.shields.io/badge/license-MIT-blue.svg)
 [![smex](https://circleci.com/gh/hbish/smex.svg?style=shield)](https://circleci.com/gh/hbish/smex)
 [![Go Report Card](https://goreportcard.com/badge/github.com/hbish/smex)](https://goreportcard.com/report/github.com/hbish/smex)
@@ -114,3 +115,7 @@ Make the changes, the linter is set up to run when you commit your code, if it p
 Smex is my first stab at building with Go. If you have any feedback, comments or notice any bugs, I'd be more than happy 
 to consider them through the github issue tracker or better yet send me a pull request! 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fhbish%2Fsmex.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fhbish%2Fsmex?ref=badge_large)
