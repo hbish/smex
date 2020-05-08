@@ -20,9 +20,11 @@ Smex supports:
 - [x] output to csv/json
 - [x] pattern matching on urls
 - [x] extraction of images
-- [ ] extraction of video
-- [ ] extraction of news
+- [x] extraction of video
+- [x] extraction of news
+- [ ] basic auth to retrieve sitemap
 - [ ] url status checking
+- [ ] support sitemap indexes
 - [ ] support for sitemaps with multiple languages
 
 Note: smex is not a sitemap validator and would not check the validity of sitemaps against the xsd. It will try to parse
@@ -44,15 +46,16 @@ You can also perform the extraction at a sitemap locally
 
 `smex extract ~/Download/sitemap.xml`
 
-If you want to change the format of the extraction simply use `--format` flag, csv & json are supported
+By default, smex write to stdout. Due to the limited space only important fields are displayed. If you want a full extract 
+of the sitemap, then add `--format` or `-f` flag to write to a file, currently smex only support csv & json.
 
 `smex extract https://yoast.com/post-sitemap.xml --remote --format csv`
 
-To filter the URLs you can supply a valid regex pattern using `--pattern` flag
+To filter the URLs you can supply a valid regex pattern using `--pattern` or `-p` flag
 
 `smex extract https://yoast.com/post-sitemap.xml --remote  --pattern ".*seo.*" --format csv`
 
-The `--output` will change the filename, this is defaulted to `smex-output.(csv|json)`
+The `--output` or `-o` flag will change the filename (no extension required), this is defaulted to `smex-output.(csv|json)`
 
 ### Check
 

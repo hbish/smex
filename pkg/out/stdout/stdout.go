@@ -52,23 +52,60 @@ func (w Writer) Write(urls []xml.URL, loc bool) error {
 		}
 	}
 
-	for _, line := range urls {
-		sb.WriteString(fmt.Sprintf("%-*s\t", maxLocLength, line.Loc))
+	for _, url := range urls {
+		sb.WriteString(fmt.Sprintf("%-*s\t", maxLocLength, url.Loc))
 		if loc {
 			sb.WriteString(fmt.Sprintf("\n"))
 			continue
 		}
-		if line.LastMod != "" {
-			sb.WriteString(fmt.Sprintf("%-20s", line.LastMod))
+		if url.LastMod != "" {
+			sb.WriteString(fmt.Sprintf("%-20s", url.LastMod))
 		}
-		if line.ChangeFreq != "" {
-			sb.WriteString(fmt.Sprintf("%-7s\t", line.ChangeFreq))
+		if url.ChangeFreq != "" {
+			sb.WriteString(fmt.Sprintf("%-7s\t", url.ChangeFreq))
 		}
-		if line.Priority != 0 {
-			sb.WriteString(fmt.Sprintf("%.2f", line.Priority))
+		if url.Priority != 0 {
+			sb.WriteString(fmt.Sprintf("%.2f", url.Priority))
 		}
 		sb.WriteString(fmt.Sprintf("\n"))
+
+		if len(url.News) > 0 {
+			writeNewsLine(&sb, url.News)
+		}
+
+		if len(url.Image) > 0 {
+			writeImageLine(&sb, url.Image)
+		}
+
+		if len(url.Video) > 0 {
+			writeVideoLine(&sb, url.Video)
+		}
 	}
 	_, err := w.w.Write([]byte(sb.String()))
 	return err
+}
+
+func writeImageLine(sb *strings.Builder, images []xml.Image) {
+	for _, image := range images {
+		sb.WriteString(fmt.Sprintf("Image\t"))
+		if image.Title != "" {
+			sb.WriteString(fmt.Sprintf("%s\t", image.Title))
+		}
+		if image.Caption != "" {
+			sb.WriteString(fmt.Sprintf("%s\t", image.Caption))
+		}
+		sb.WriteString(fmt.Sprintf("%s\n", image.Loc))
+	}
+}
+
+func writeVideoLine(sb *strings.Builder, videos []xml.Video) {
+	for _, video := range videos {
+		sb.WriteString(fmt.Sprintf("Video\t%s\n", video.ContentLoc))
+	}
+}
+
+func writeNewsLine(sb *strings.Builder, news []xml.News) {
+	for _, n := range news {
+		sb.WriteString(fmt.Sprintf("News\t%s\n", n.Title))
+	}
 }
