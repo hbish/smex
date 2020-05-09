@@ -74,6 +74,10 @@ To get help simply run `smex` without any commands and flags.
 
 `go get -u github.com/hbish/smex`
 
+### Using Homebrew
+
+`brew install hbish/taps/smex`
+
 ### Binary
 
 Currently cross-compiled for:
