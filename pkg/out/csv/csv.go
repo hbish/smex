@@ -45,6 +45,9 @@ func NewWriter(w io.Writer, delim rune) *Writer {
 
 func (w Writer) WriteToFile(urls []xml.URL, loc bool) ([][]string, error) {
 	var content [][]string
+
+	//var flattened map[string]interface{}
+
 	header := w.writeHeader(loc)
 	content = append(content, header)
 
