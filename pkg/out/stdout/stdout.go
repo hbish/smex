@@ -1,3 +1,6 @@
+// Package stdout stdout
+package stdout
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package stdout
 
 import (
 	"fmt"
@@ -29,17 +31,20 @@ import (
 	"github.com/hbish/smex/pkg/xml"
 )
 
+// Writer writer
 // TODO: add ability to change delimiter
 type Writer struct {
 	w io.Writer
 }
 
+// NewWriter new stdout writer
 func NewWriter(w io.Writer) *Writer {
 	return &Writer{
 		w: w,
 	}
 }
 
+// Write Write
 func (w Writer) Write(urls []xml.URL, loc bool) error {
 	var maxLocLength int
 	var sb strings.Builder

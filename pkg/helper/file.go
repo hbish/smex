@@ -1,4 +1,4 @@
-//Package helper ...
+//Package helper helper
 package helper
 
 /*
@@ -31,14 +31,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-// load sitemap currently using Remote to distinguish type
+// LoadSitemap - load sitemap currently using Remote to distinguish type
 // TODO: enhance parsing logic to determine urls
 func LoadSitemap(path string, Remote bool) ([]byte, error) {
 	if Remote {
 		return loadSitemapFromHTTP(path)
-	} else {
-		return loadSitemapFromFile(path)
 	}
+	return loadSitemapFromFile(path)
 }
 
 // load sitemap given path

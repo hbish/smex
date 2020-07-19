@@ -1,3 +1,6 @@
+// Package out out
+package out
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package out
 
 import (
 	"io"
@@ -34,16 +36,19 @@ import (
 	"github.com/hbish/smex/pkg/xml"
 )
 
+// Format for the output
 type Format string
 
 const (
+	// Stdout stdout
 	Stdout Format = "stdout"
-	Csv    Format = "csv"
-	Json   Format = "json"
+	// Csv csv
+	Csv Format = "csv"
+	// JSON json
+	JSON Format = "json"
 )
 
-// A SmexWriter writes records to different formats.
-//
+// SmexWriter writes records to different formats.
 // Returns a particular writer based on the type
 type SmexWriter struct {
 	fs     afero.Fs
@@ -91,7 +96,7 @@ func (w SmexWriter) Write(urls []xml.URL, loc bool, filename string) error {
 		writer := csv.NewWriter(csvFile, ',')
 		defer writer.Flush()
 		_, _ = writer.WriteToFile(urls, loc)
-	case Json:
+	case JSON:
 		jsonFile, err := w.fs.Create(filename + ".json")
 		if err != nil {
 			return err

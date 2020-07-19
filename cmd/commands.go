@@ -1,3 +1,6 @@
+// Package cmd cmd
+package cmd
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
 
 import (
 	"fmt"
@@ -30,13 +32,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// AppFs is afero filesystem
 var AppFs = afero.NewOsFs()
 
+// Verbose is a flag to toggle log levels
 var Verbose bool
+
+// Remote is a flag to toggle if a file is local or remote
 var Remote bool
+
+// Index is a flag to denote if the file is a sitemap index file
 var Index bool
+
+// Format determine the output file format
 var Format string
+
+// Filename determine the name of the output file
 var Filename string
+
+// Pattern determines a regex pattern to filter on the sitemap
 var Pattern string
 
 // rootCmd represents the base command when called without any subcommands
