@@ -1,3 +1,6 @@
+// Package xml xml
+package xml
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,8 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package xml
-
 import (
 	"bytes"
 	"encoding/xml"
@@ -30,14 +31,14 @@ import (
 // Sitemap XML Protocol Implementation
 // - info: https://www.sitemaps.org/protocol.html
 
-// URLSet
+// URLSet urlSet struct
 type URLSet struct {
 	XMLName xml.Name `xml:"urlset"`
 	XMLNs   string   `xml:"xmlns,attr"`
 	URL     []URL    `xml:"url"`
 }
 
-// URL is for every single location url
+// URL url struct
 type URL struct {
 	Loc        string  `xml:"loc" json:"loc"`
 	LastMod    string  `xml:"lastmod,omitempty" json:"lastmod,omitempty"`
@@ -48,6 +49,7 @@ type URL struct {
 	News       []News  `xml:"news,omitempty" json:"news,omitempty"`
 }
 
+// Image image struct
 type Image struct {
 	Loc         string `xml:"loc" json:"loc"`
 	Title       string `xml:"title,omitempty" json:"title,omitempty"`
@@ -56,6 +58,7 @@ type Image struct {
 	License     string `xml:"license,omitempty" json:"license,omitempty"`
 }
 
+// Video video struct
 type Video struct {
 	ThumbnailLoc         string   `xml:"thumbnail_location" json:"thumbnail_location"`
 	Title                string   `xml:"title,omitempty" json:"title,omitempty"`
@@ -78,6 +81,7 @@ type Video struct {
 	Category             string   `xml:"category,omitempty" json:"category,omitempty"`
 }
 
+// News news struct
 type News struct {
 	Publication     Publication `xml:"publication,omitempty" json:"publication,omitempty"`
 	PublicationDate string      `xml:"publication_date,omitempty" json:"publication_date,omitempty"`
@@ -88,21 +92,23 @@ type News struct {
 	StockTickers    string      `xml:"stock_tickers,omitempty" json:"stock_tickers,omitempty"`
 }
 
+// Publication publication struct
 type Publication struct {
 	Name     string `xml:"name,omitempty" json:"name,omitempty"`
 	Language string `xml:"language,omitempty" json:"language,omitempty"`
 }
 
-func unmarshalXML(rawXml []byte) (*URLSet, error) {
+// unmarshalXML unmarshal raw data
+func unmarshalXML(rawXML []byte) (*URLSet, error) {
 	urlSet := URLSet{}
 
 	// validate xml without storing
-	if err := xml.Unmarshal(rawXml, new(interface{})); err != nil {
+	if err := xml.Unmarshal(rawXML, new(interface{})); err != nil {
 		return nil, err
 	}
 
 	// decode xml and trim white spaces
-	reader := bytes.NewReader(rawXml)
+	reader := bytes.NewReader(rawXML)
 	d := xml.NewDecoder(reader)
 	td := xml.NewTokenDecoder(TrimmingTokenReader{d})
 	err := td.Decode(&urlSet)
@@ -114,9 +120,9 @@ func unmarshalXML(rawXml []byte) (*URLSet, error) {
 	return &urlSet, nil
 }
 
-// unmarshal xml and filter by pattern
-func UnmarshalXMLP(rawXml []byte, pattern string) (*URLSet, error) {
-	urlSet, err := unmarshalXML(rawXml)
+// UnmarshalXMLP unmarshal xml and filter by pattern
+func UnmarshalXMLP(rawXML []byte, pattern string) (*URLSet, error) {
+	urlSet, err := unmarshalXML(rawXML)
 	if err != nil {
 		return nil, err
 	}
@@ -141,12 +147,12 @@ func UnmarshalXMLP(rawXml []byte, pattern string) (*URLSet, error) {
 	return urlSet, nil
 }
 
-// Trimming TokenReader
+// TrimmingTokenReader Trimming TokenReader
 type TrimmingTokenReader struct {
 	dec *xml.Decoder
 }
 
-// Trimming token
+// Token Trimming token
 func (tr TrimmingTokenReader) Token() (xml.Token, error) {
 	t, err := tr.dec.Token()
 	if cd, ok := t.(xml.CharData); ok {

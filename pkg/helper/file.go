@@ -1,3 +1,6 @@
+//Package helper helper
+package helper
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package helper
 
 import (
 	"io/ioutil"
@@ -29,14 +31,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-// load sitemap currently using Remote to distinguish type
+// LoadSitemap - load sitemap currently using Remote to distinguish type
 // TODO: enhance parsing logic to determine urls
 func LoadSitemap(path string, Remote bool) ([]byte, error) {
 	if Remote {
 		return loadSitemapFromHTTP(path)
-	} else {
-		return loadSitemapFromFile(path)
 	}
+	return loadSitemapFromFile(path)
 }
 
 // load sitemap given path
