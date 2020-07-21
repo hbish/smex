@@ -8,7 +8,7 @@ import (
 
 func TestExtractCmd_Error(t *testing.T) {
 	_, err := executeCommand(rootCmd, []string{"extract"})
-	assert.EqualError(t, err, "extract expects the location of the sitemap\n")
+	assert.EqualError(t, err, "extract expects the location of the sitemap")
 }
 
 func TestExtractCmd(t *testing.T) {

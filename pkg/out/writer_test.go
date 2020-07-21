@@ -81,7 +81,7 @@ func TestNewMultiWriter_Json(t *testing.T) {
 	var fs = afero.NewMemMapFs()
 	w := NewMultiWriter(fs, os.Stdout, "json")
 	assert.NotNil(t, w)
-	assert.Equal(t, w.Format, Json)
+	assert.Equal(t, w.Format, JSON)
 
 	urls := []xml.URL{
 		{Loc: "http://www.example.com/", LastMod: "2005-01-01", ChangeFreq: "monthly", Priority: 0.8},

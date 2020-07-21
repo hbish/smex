@@ -1,3 +1,6 @@
+//Package json json
+package json
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package json
 
 import (
 	"encoding/json"
@@ -28,11 +30,13 @@ import (
 	"github.com/hbish/smex/pkg/xml"
 )
 
+// Writer writer
 type Writer struct {
 	w      io.Writer
 	indent string
 }
 
+// NewWriter new json writer
 func NewWriter(w io.Writer, pretty bool) *Writer {
 	indent := ""
 	if pretty {
@@ -45,6 +49,7 @@ func NewWriter(w io.Writer, pretty bool) *Writer {
 	}
 }
 
+// WriteToFile WriteToFile
 func (w Writer) WriteToFile(urls []xml.URL, loc bool) ([]byte, error) {
 	if loc {
 		for i, url := range urls {

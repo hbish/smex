@@ -1,3 +1,6 @@
+// Package cmd cmd
+package cmd
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package cmd
 
 import (
 	"github.com/hbish/smex/pkg/helper"
@@ -38,7 +40,7 @@ var extractCmd = &cobra.Command{
 additional flags are supply to either extract only loc and filter by a specific pattern`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			return errors.New("extract expects the location of the sitemap\n")
+			return errors.New("extract expects the location of the sitemap")
 		}
 		return nil
 	},

@@ -1,3 +1,6 @@
+// Package csv csv
+package csv
+
 /*
 Copyright © 2020 Ben Shi
 
@@ -19,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package csv
 
 import (
 	"encoding/csv"
@@ -30,10 +32,12 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Writer writer
 type Writer struct {
 	*csv.Writer
 }
 
+// NewWriter create a new csv writer
 func NewWriter(w io.Writer, delim rune) *Writer {
 	writer := csv.NewWriter(w)
 	if delim != 0 {
@@ -43,6 +47,7 @@ func NewWriter(w io.Writer, delim rune) *Writer {
 	return &Writer{Writer: writer}
 }
 
+// WriteToFile WriteToFile
 func (w Writer) WriteToFile(urls []xml.URL, loc bool) ([][]string, error) {
 	var content [][]string
 	header := w.writeHeader(loc)
